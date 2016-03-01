@@ -1,0 +1,14 @@
+/*
+ * Raspberry Pi example code
+ *
+ * Language : C
+ * Objective : gpio control - LED on/off
+ *
+ * make by cjung
+ */
+
+Discription
+1. get GPIO memory by mmap() 
+	#define GPIO_BASE	0x3F200000
+
+2. USE GPIO17 & GPIO18
