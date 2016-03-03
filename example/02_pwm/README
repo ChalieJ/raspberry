@@ -1,0 +1,19 @@
+/*
+ * Raspberry Pi example code
+ *
+ * Language : C
+ * Objective : pwm control - LED brightness Control
+ *
+ * make by cjung & jypark
+ */
+
+Discription
+1. set alt function (GPIO18 -> pwm)
+
+2. set GPIO18 clock
+
+3. set mode
+
+4. set pwm range
+
+5. pulse change
