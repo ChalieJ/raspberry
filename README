@@ -1,2 +1,28 @@
-test
+
+Raspberry Pi 2.
+
+1. Purpose : study embedded.
+
+2. Language : C
+
+3. Team roster
+  = JYPARK : Researcher Engineer
+  = CJUNG : Associate Researcher Engineer
+  
+4. History
+
+2016-02-26
+- Buy Raspberry Pi!!
+
+2016-02-29
+- GPIO control success
+
+2016-03-01
+- To make git repository!!
+
+2016-03-03
+- PWM control success
+
+
+
 
