@@ -1,0 +1,117 @@
+#ver001 :2016.03.05. by jypark
+
+============================================
+1. Wi-Fi 동글
+============================================
+
+1) ifconfig로 랜카드 확인 - 물론 wlan0 일테지만..
+
+2) /etc/network/interfaces 수정
+
+auto wlan0
+allow-hotplug wlan0
+iface wlan0 inet manual
+wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+wpa-ssid "와이파이이름"
+wpa-psk "와이파이비밀번호"
+
+3) reboot
+
+
+============================================
+2. Expand File
+============================================
+
+http://www.rasplay.org/?p=7736
+
+//Start Raspberry pi config
+$ sudo raspi-config
+
+    1) Expand Filesystem 선택 후 Enter
+    2) 확인 & Finish
+
+
+============================================
+3. 한글 폰트
+============================================
+
+# sudo apt-get install ibus ibus-hangul ttf-unfonts-core
+
+//.bashrc 다음 내용 추가
+export GTK_IM_MODULE=ibsu
+export XMODIFIERS=@im=ibus
+expirt QT_IM_MODULE=ibus
+
+메뉴 -> 기본설정 -> IBus 설정 
+
+
+============================================
+4. 라즈베리파이에 VNC 서버 설치
+============================================
+
+- 설치
+# sudo apt-get update
+# sudo apt-get install tightvncserver
+
+- 접속 후 암호 설정
+# vncserver
+
+- TightVNC 포트 확인 (default 5901)
+# sudo netstat -tulpn
+
+- 라즈베리파이 스크립트에 VNC 서버 실행 구문 추가
+# sudo vi /etc/init.d/tightvncserver
+
+추가 스크립트
+----------------------------------------------------------------------------
+### BEGIN INIT INFO
+# Provides: vncboot
+# Required-Start: $remote_fs $syslog
+# Required-Stop: $remote_fs $syslog
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: Start VNC Server at boot time
+# Description: Start VNC Server at boot time.
+### END INIT INFO
+#! /bin/sh
+# /etc/init.d/vncboot
+USER=root
+HOME=/root
+export USER HOME
+case “$1” in
+start)
+echo “Starting VNC Server”
+#Insert your favoured settings for a VNC session
+/usr/bin/vncserver :0 -geometry 1280×800 -depth 16 -pixelformat rgb565
+;;
+stop)
+echo “Stopping VNC Server”
+/usr/bin/vncserver -kill :0
+;;
+*)
+echo “Usage: /etc/init.d/vncboot {start|stop}”
+exit 1
+;;
+esac
+exit 0
+----------------------------------------------------------------------------
+
+# sudo chmod 755 /etc/init.d/tightvncserver
+# sudo update-rc.d tightvncserver defaults
+
+
+============================================
+5. Chromium browser
+============================================
+
+라즈비안 jessie 버전 기준
+"# apt-get install chromium-browser" 팩키지가 없기 때문에 수동설치가 필요합니다.
+
+//접근이 안될 경우 "sudo"로 실행
+wget http://ftp.us.debian.org/debian/pool/main/libg/libgcrypt11/libgcrypt11_1.5.0-5+deb7u3_armhf.deb
+wget http://launchpadlibrarian.net/218525709/chromium-browser_45.0.2454.85-0ubuntu0.14.04.1.1097_armhf.deb
+wget http://launchpadlibrarian.net/218525711/chromium-codecs-ffmpeg-extra_45.0.2454.85-0ubuntu0.14.04.1.1097_armhf.deb
+
+sudo dpkg -i libgcrypt11_1.5.0-5+deb7u3_armhf.deb
+sudo dpkg -i chromium-codecs-ffmpeg-extra_45.0.2454.85-0ubuntu0.14.04.1.1097_armhf.deb
+sudo dpkg -i chromium-browser_45.0.2454.85-0ubuntu0.14.04.1.1097_armhf.deb
