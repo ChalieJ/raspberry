@@ -2,12 +2,74 @@
 #define __RASPBERRY_H__
 
 #define PERI_BASE       0x3F000000
-#define CLK_BASE        (PERI_BASE + 0x101000)
+//#define CLK_BASE        (PERI_BASE + 0x101000)
+#define CLK_BASE        (PERI_BASE + 0x1010A0)
 #define GPIO_BASE       (PERI_BASE + 0x200000)
 #define GPIO_PWM        (PERI_BASE + 0x20C000)
 
 ////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////// GPIO REGISTER DEFINE ///////
+////////////////////////////////////////////////////// CLOCK REGISTER DEFINE (P.105)
+////////////////////////////////////////////////////////////////////////////////////
+
+typedef struct {
+    unsigned int PASSWD     :8;
+    unsigned int RESERVED0  :13;
+    unsigned int MASH       :2;
+    unsigned int FLIP       :1;
+    unsigned int BUSY       :1;
+    unsigned int RESERVED1  :1;
+    unsigned int KILL       :1;
+    unsigned int ENAB       :1;
+    unsigned int SRC        :4;
+} CLK_GP_CTL_IDX_TYPE;
+    
+typedef union {
+    unsigned int                nREG;
+    CLK_GP_CTL_IDX_TYPE         bREG;
+} CLK_GP0_CTL_TYPE;;
+
+typedef union {
+    unsigned int                nREG;
+    CLK_GP_CTL_IDX_TYPE         bREG;
+} CLK_GP1_CTL_TYPE;;
+
+typedef union {
+    unsigned int                nREG;
+    CLK_GP_CTL_IDX_TYPE         bREG;
+} CLK_GP2_CTL_TYPE;;
+
+typedef struct {
+    unsigned int PASSWD     :8;
+    unsigned int DIVI       :12;
+    unsigned int DIVF       :12;
+} CLK_GP_DIV_IDX_TYPE;
+    
+typedef union {
+    unsigned int                nREG;
+    CLK_GP_DIV_IDX_TYPE         bREG;
+} CLK_GP0_DIV_TYPE;;
+
+typedef union {
+    unsigned int                nREG;
+    CLK_GP_DIV_IDX_TYPE         bREG;
+} CLK_GP1_DIV_TYPE;;
+
+typedef union {
+    unsigned int                nREG;
+    CLK_GP_DIV_IDX_TYPE         bREG;
+} CLK_GP2_DIV_TYPE;;
+
+typedef struct {
+    volatile CLK_GP0_CTL_TYPE               ClkGP0Ctl;              /* 0x0000 */  
+    unsigned CLK_GP0_DIV_TYPE               ClkGP0Div;              /* 0x0000 */
+    volatile CLK_GP1_CTL_TYPE               ClkGP1Ctl;              /* 0x0000 */
+    unsigned CLK_GP1_DIV_TYPE               ClkGP1Div;              /* 0x0000 */
+    volatile CLK_GP2_CTL_TYPE               ClkGP2Ctl;              /* 0x0000 */
+    volatile CLK_GP2_DIV_TYPE               ClkGP2Div;              /* 0x0000 */
+} CLK, *PCLK
+
+////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////// GPIO REGISTER DEFINE (P.90)
 ////////////////////////////////////////////////////////////////////////////////////
 
 typedef struct {
@@ -150,7 +212,8 @@ typedef struct {
     unsigned int PIN28      :1;
     unsigned int PIN29      :1;
     unsigned int PIN30      :1;
-    unsigned int PIN31      :1;
+    unsigned int PIN31      :1;141
+
     unsigned int PIN32      :1;
 } GPIO_PIN0_IDX_TYPE;
 
@@ -171,7 +234,8 @@ typedef struct {
     unsigned int PIN45      :1;
     unsigned int PIN46      :1;
     unsigned int PIN47      :1;
-    unsigned int PIN48      :1;
+    unsi141
+        gned int PIN48      :1;
     unsigned int PIN49      :1;
     unsigned int PIN50      :1;
     unsigned int PIN51      :1;
@@ -219,7 +283,8 @@ typedef union {
 typedef union {
     unsigned int                nREG;
     GPIO_PIN1_IDX_TYPE          bREG;
-} GPIO_EVENT1_TYPE;
+} GPIO_E141
+VENT1_TYPE;
 
 typedef union {
     unsigned int                nREG;
@@ -294,6 +359,7 @@ typedef union {
 typedef union {
     unsigned int                nREG;
     GPIO_PIN0_IDX_TYPE          bREG;
+141
 } GPIO_PULL_UP_DOWN_CLK0_TYPE;
 
 typedef union {
@@ -345,7 +411,7 @@ typedef struct {
 } GPIO, *PGPIO;
 
 ////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////// PWM REGISTER DEFINE ///////
+//////////////////////////////////////////////////////// PWM REGISTER DEFINE (P.141)
 ////////////////////////////////////////////////////////////////////////////////////
 
 typedef struct {
@@ -448,11 +514,11 @@ typedef struct {
     volatile PWM_CTL_TYPE                   PwmCtl;                 /* 0x0000 Pulse Width Modulation Control */
     volatile PWM_STA_TYPE                   PwmSta;                 /* 0x0004 Pulse Width Modulation Status */
     volatile PWM_DMAC_TYPE                  PwmDmac;                /* 0x0008 Pulse Width Modulation Control */
-    unsigned int Reserved1;
+    unsigned int                            Reserved1;
     volatile PWM_RNG1_TYPE                  PwmRng1;                /* 0x0010 Pulse Width Modulation Channel1 Range */
     volatile PWM_DAT1_TYPE                  PwmDat1;                /* 0x0014 Pulse Width Modulation Data1 */
     volatile PWM_FIF1_TYPE                  PwmFif1;                /* 0x0018 Pulse Width Modulation FIFO input */
-    unsigned int Reserved2;
+    unsigned int                            Reserved2;
     volatile PWM_RNG2_TYPE                  PwmRng2;                /* 0x0020 Pulse Width Modulation Channel2 Range */
     volatile PWM_DAT2_TYPE                  PwmDat2;                /* 0x0024 Pulse Width Modulation Data2 */
 } PWM, *PPWM;
