@@ -212,8 +212,7 @@ typedef struct {
     unsigned int PIN28      :1;
     unsigned int PIN29      :1;
     unsigned int PIN30      :1;
-    unsigned int PIN31      :1;141
-
+    unsigned int PIN31      :1;
     unsigned int PIN32      :1;
 } GPIO_PIN0_IDX_TYPE;
 
@@ -234,8 +233,7 @@ typedef struct {
     unsigned int PIN45      :1;
     unsigned int PIN46      :1;
     unsigned int PIN47      :1;
-    unsi141
-        gned int PIN48      :1;
+    unsigned int PIN48      :1;
     unsigned int PIN49      :1;
     unsigned int PIN50      :1;
     unsigned int PIN51      :1;
@@ -283,8 +281,7 @@ typedef union {
 typedef union {
     unsigned int                nREG;
     GPIO_PIN1_IDX_TYPE          bREG;
-} GPIO_E141
-VENT1_TYPE;
+} GPIO_EVENT1_TYPE;
 
 typedef union {
     unsigned int                nREG;
