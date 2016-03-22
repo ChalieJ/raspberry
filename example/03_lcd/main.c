@@ -11,6 +11,7 @@
 #define GPIO_PWM        0x3F20C000
 #define CLK_BASE        0x3F101000
 
+/* define for gpio alternate function */
 #define GPFSEL0         (0x00 / 4)  // 0 ~ 9
 #define GPFSEL1         (0x04 / 4)  // 10 ~ 19
 #define GPFSEL2         (0x08 / 4)  // 20 ~ 29
@@ -18,23 +19,34 @@
 #define GPFSEL4         (0x10 / 4)  // 40 ~ 49
 #define GPFSEL5         (0x14 / 4)  // 50 ~ 54
 
+#define PIN0            0
+#define PIN1            3
+#define PIN2            6
+#define PIN3            9
+#define PIN4            12
+#define PIN5            15
+#define PIN6            18
+#define PIN7            21
+#define PIN8            24
+#define PIN9            27
 
+/* define for gpio input/output */
 #define GPSET0          (0x1C / 4)
 #define GPSET1          (0x20 / 4)
 #define GPCLR0          (0x28 / 4)
 #define GPCLR1          (0x2C / 4)
 
-#define E           16
-#define RW          17
-#define RS          18
-#define D0          19
-#define D1          20
-#define D2          21
-#define D3          22
-#define D4          23
-#define D5          24
-#define D6          25
-#define D7          26
+#define E               16
+#define RW              17
+#define RS              18
+#define D0              19
+#define D1              20
+#define D2              21
+#define D3              22
+#define D4              23
+#define D5              24
+#define D6              25
+#define D7              26
 
 void lcd_init(void);
 void lcd_on(void);
@@ -77,13 +89,12 @@ void lcd_init()
 
     volatile unsigned int *gpio = (volatile unsigned int *)gpio_base_map;
     /* function select for gpio output */
-    gpio[GPFSEL1/4] |= (1 << E) | (1 << RW) | (1 << RS) | (1 << D0) |
-        (1 << D1) | (1 << D2) | (1 << D3) | (1 << D4) |
-        (1 << D5) | (1 << D6) | (1 << D7);
+    gpio[GPFSEL1] = (1 << PIN6) | (1 << PIN7) | (1 << PIN8) | (1 << PIN9);
+    gpio[GPFSEL2] = (1 << PIN0) | (1 << PIN1) | (1 << PIN2) | (1 << PIN3) |
+                    (1 << PIN4) | (1 << PIN5) | (1 << PIN6);
 
     lcd_on();
     lcd_clr();
-
 }
 
 void lcd_on()
