@@ -1,4 +1,9 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <sys/mman.h>
 
 #define MEM_DEV     "/dev/mem"
 
@@ -37,6 +42,11 @@ void lcd_clr(void);
 void lcd_cmd(unsigned char);
 void lcd_data(unsigned char);
 
+void msleep(unsigned int millis);
+void usleep(unsigned int micros);
+
+volatile unsigned int *gpio;
+
 int main()
 {
     lcd_init();
@@ -65,7 +75,7 @@ void lcd_init()
         exit(-1);
     }
 
-    volatile unsigned int *gpio = (volatile unsigned int *)gpio_memory_map;
+    volatile unsigned int *gpio = (volatile unsigned int *)gpio_base_map;
     /* function select for gpio output */
     gpio[GPFSEL1/4] |= (1 << E) | (1 << RW) | (1 << RS) | (1 << D0) |
         (1 << D1) | (1 << D2) | (1 << D3) | (1 << D4) |
