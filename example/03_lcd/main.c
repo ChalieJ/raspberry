@@ -36,7 +36,7 @@
 #define GPCLR0          (0x28 / 4)
 #define GPCLR1          (0x2C / 4)
 
-#define E               16
+#define EN              16
 #define RW              17
 #define RS              18
 #define D0              19
@@ -53,26 +53,45 @@ void lcd_on(void);
 void lcd_clr(void);
 void lcd_cmd(unsigned char);
 void lcd_data(unsigned char);
+void lcd_close();
 
 void msleep(unsigned int millis);
 void usleep(unsigned int micros);
 
 volatile unsigned int *gpio;
+int fd;
 
 int main()
 {
     lcd_init();
 
+	lcd_data('A');
+	lcd_data('A');
+	lcd_data('A');
+	lcd_data('A');
+	lcd_data('A');
+	lcd_data('A');
+	lcd_data('A');
+
+	lcd_close();
+
     return 0;
+}
+
+void lcd_close()
+{
+	munmap((void *)gpio, 4096);
+	close(fd);
 }
 
 void lcd_init()
 {
+	printf("lcd_init() start\n");
     //DB0~7 : gpio 19,20,21,22,23,24,25,26
     //RS    : gpio 18
     //RW    : gpio 17
     //E     : gpio 16
-    int fd = open(MEM_DEV, O_RDWR | O_SYNC);
+    fd = open(MEM_DEV, O_RDWR | O_SYNC);
     if(fd < 0) {
         printf("error : cant open [%s]\n", MEM_DEV);
         exit(-1);
@@ -87,58 +106,92 @@ void lcd_init()
         exit(-1);
     }
 
-    volatile unsigned int *gpio = (volatile unsigned int *)gpio_base_map;
+    gpio = (volatile unsigned int *)gpio_base_map;
+	
+	printf("lcd_init() gpio addr [%08X]\n", gpio);
+
     /* function select for gpio output */
     gpio[GPFSEL1] = (1 << PIN6) | (1 << PIN7) | (1 << PIN8) | (1 << PIN9);
     gpio[GPFSEL2] = (1 << PIN0) | (1 << PIN1) | (1 << PIN2) | (1 << PIN3) |
                     (1 << PIN4) | (1 << PIN5) | (1 << PIN6);
 
+	printf("GPFSEL1 [%08X]\n", gpio[GPFSEL1]);
+	printf("GPFSEL2 [%08X]\n", gpio[GPFSEL2]);
+
     lcd_on();
     lcd_clr();
+	printf("lcd_init() end\n");
 }
+
+#define LCD_CLR		0x01
+#define	LCD_HOME	0x02
+#define LCD_ENT		0x06
+#define LCD_DSP		0x0F
+#define	LCD_CUR		0x14
+#define LCD_FUNC	0x38
 
 void lcd_on()
 {
+	printf("lcd_on() start\n");
+#if 1
+	lcd_cmd(LCD_FUNC);
+	lcd_cmd(LCD_DSP);
+	lcd_cmd(LCD_ENT);
+	lcd_cmd(LCD_CUR);
+	lcd_cmd(LCD_CLR);
+	lcd_cmd(LCD_HOME);
+#else
     lcd_cmd(0x38);
     lcd_cmd(0x0C);
     lcd_cmd(0x01);
     lcd_cmd(0x06);
     lcd_cmd(0x01);
+#endif
+	printf("lcd_on() end\n");
 }
 
 void lcd_clr()
 {
+	printf("lcd_clr() start\n");
     lcd_cmd(1);
-    msleep(1);
+    msleep(10);
     lcd_cmd(2);
-    msleep(1);
+    msleep(10);
+	printf("lcd_clr() end\n");
 }
 
 void lcd_cmd(unsigned char data)
 {
-    //check delay
-    gpio[GPCLR0] |= (1 << E) | (1 << RS);
-    usleep(1);
+	printf("lcd_cmd() start %02X\n", data);
+    gpio[GPCLR0] |= (1 << EN) | (1 << RW) | (1 << RS);
     gpio[GPSET0] |= (data << D0);
+    msleep(10);
     usleep(50);
-    gpio[GPSET0] |= (data << E);
+    gpio[GPSET0] |= (data << EN);
+    msleep(10);
     usleep(20);
-    gpio[GPCLR0] |= (data << E);
+    gpio[GPCLR0] |= (data << EN);
+    msleep(10);
     usleep(50);
+	printf("lcd_cmd() end\n");
 }
 
 void lcd_data(unsigned char data)
 {
     //check delay
-    gpio[GPCLR0] |= (1 << E);
+	printf("lcd_data() start %02X\n", data);
+    gpio[GPCLR0] |= (1 << EN) | (1 << RW);
     gpio[GPSET0] |= (1 << RS);
-    usleep(1);
     gpio[GPSET0] |= (data << D0);
+    msleep(10);
     usleep(50);
-    gpio[GPSET0] |= (data << E);
+    gpio[GPSET0] |= (data << EN);
+    msleep(10);
     usleep(20);
-    gpio[GPCLR0] |= (data << E);
+    gpio[GPCLR0] |= (data << EN);
+    msleep(10);
     usleep(50);
+	printf("lcd_data() end\n");
 }
 
 void msleep(unsigned int millis)
